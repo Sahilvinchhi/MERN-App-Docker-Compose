@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./server
+    container_name: backend-container
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./client
+    container_name: frontend-container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend  # Changed from 'server' to 'backend'
+
+volumes:
+  mongo-data:
